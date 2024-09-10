@@ -19,7 +19,7 @@ const registerUser = asynchandler(async (req, res) => {
 
     const { username, email, fullname, password } = req.body
 
-
+    console.log(req.files);
 
     if ([fullname, email, username, password].some((field) =>
         field?.trim() === "")
@@ -31,7 +31,7 @@ const registerUser = asynchandler(async (req, res) => {
         $or: [{ username }, { email }]
     })
     if (existedUser) {
-        throw new ApiError(409, "Username already exist")
+        throw new ApiError(409, "User already exist")
     }
     console.log(res.files);
 

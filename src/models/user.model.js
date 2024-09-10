@@ -27,7 +27,7 @@ const userSchema = new Schema({
     },
     avatar: {
         type: String, //cloudnary
-        required: true,
+        // required: true,
     },
     coverimage: {
         type: String, //cloudnary
@@ -52,7 +52,7 @@ const userSchema = new Schema({
 userSchema.pre("save", async function (next) {
     if (!this.isModified("password")) return next();
 
-    this.password = bcrypt.hash(this.password, 10)
+    this.password = await bcrypt.hash(this.password, 10)
     next()
 })
 
@@ -84,7 +84,6 @@ userSchema.methods.generateRefeshToken = function () {
         }
     )
 }
-
 
 
 export const User = mongoose.model("User", userSchema)

@@ -1,7 +1,7 @@
 import { asynchandler } from "../utils/asynchandler.js";
 import { ApiError } from "../utils/apierror.js"
 import { User } from "../models/user.model.js"
-import { uploadOnClouldinary } from "../utils/cloudnary.js"
+import { uploadOnCloudinary } from "../utils/cloudnary.js"
 import { ApiResponse } from "../utils/apiresponse.js"
 
 
@@ -19,7 +19,7 @@ const registerUser = asynchandler(async (req, res) => {
 
     const { username, email, fullname, password } = req.body
 
-    console.log(req.files);
+    // console.log(req.files);
 
     if ([fullname, email, username, password].some((field) =>
         field?.trim() === "")
@@ -33,26 +33,27 @@ const registerUser = asynchandler(async (req, res) => {
     if (existedUser) {
         throw new ApiError(409, "User already exist")
     }
-    console.log(res.files);
 
-    // const avatarlocalpath = req.files?.avatar[0]?.path;
-    // const coverimagelocalpath = req.files?.coverimage[0]?.path;
+    const avatarlocalpath = req.files?.avatar[0]?.path;
+    const coverimagelocalpath = req.files?.coverimage[0]?.path;
 
-    // if (!avatarlocalpath) {
-    //     throw new ApiError(400, "avatar file is required")
+    if (!avatarlocalpath) {
+        throw new ApiError(400, "avatar file is required")
 
-    // }
-    // const avatar = await uploadOnClouldinary(avatarlocalpath)
-    // const coverimage = await uploadOnClouldinary(coverimagelocalpathlocalpath)
+    }
+    const avatar = await uploadOnCloudinary(avatarlocalpath)
+    const coverimage = await uploadOnCloudinary(coverimagelocalpath)
 
-    // if (!avatar) {
-    //     throw new ApiError(400, "avatar file is required")
-    // }
-
+    console.log(avatar);
+    console.log(coverimage);
+    if (!avatar) {
+        throw new ApiError(400, "avatar on cloud file is required")
+    }
+    // 
     const user = await User.create({
         fullname,
-        // avatar: avatar.url, // Ensure avatar.url exists if used
-        // coverimage: coverimage?.url || "", // Ensure coverimage.url exists if used
+        avatar: avatar.url, // Ensure avatar.url exists if used
+        coverimage: coverimage?.url || "", // Ensure coverimage.url exists if used
         email,
         password,
         username: username.toLowerCase()

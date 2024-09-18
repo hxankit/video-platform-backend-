@@ -1,23 +1,18 @@
-const asynchandler = (requesthandler) => {
-    return (req, res, next) => {
-        Promise.resolve(requesthandler(req, res, next))
-            .catch((error) => next(error))
-    }
-}
-
-
-
-
-export { asynchandler }
-
-// const asynchandler = (fn) => async (req, res, next) => { 
-//     try {
-//         await fn(res,res,next)
-//     } catch (error) {
-//         console.log(error.code || 500).json({
-//             sucess: false,
-//             message:error.message
-//         });
+// const asynchandler = (requesthandler) => {
+//     return (req, res, next) => {
+//         Promise.resolve(requesthandler(req, res, next))
+//             .catch((error) => next(error))
 //     }
 // }
 
+const asynchandler = (fn) => async (req, res, next) => {
+    try {
+        await fn(req, res, next);
+    } catch (error) {
+        // Forward the error to Express error-handling middleware
+        next(error);
+    }
+};
+
+
+export { asynchandler }
